@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using refactor_me.Filters;
+using refactor_me.Models;
 using refactor_me.ProductOptionService;
 using refactor_me.ProductService;
 using refactor_this.Models;
@@ -60,12 +60,14 @@ namespace refactor_this.Controllers
 
         [Route]
         [HttpPost]
-        public async Task<IHttpActionResult> Create(Product product)
+        public async Task<IHttpActionResult> Create([FromBody]CreateProductDto dto)
         {
-
+            //this can be simpilfied with auto mapper
+            Product product = MapProductDtoToProduct(dto);
             await _productService.Create(product);
             return Created($"/products/{product.Id}", product);
         }
+
 
         [Route("{id}")]
         [HttpPut]
@@ -85,17 +87,29 @@ namespace refactor_this.Controllers
         {
             await _productService.Delete(id);
         }
-        
+        private static Product MapProductDtoToProduct(CreateProductDto dto)
+        {
+            return new Product
+            {
+                DeliveryPrice = dto.DeliveryPrice,
+                Description = dto.Description,
+                Name = dto.Name,
+                Price = dto.Price
+            };
+        }
+
         #endregion
 
-        
+        #region Prodcut Options
+
         [Route("{productId}/options")]
         [HttpGet]
-        public async Task<IEnumerable<ProductOption>> GetOptions(Guid productId)
+        public async Task<IHttpActionResult> GetOptions(Guid productId)
         {
-            //TODO VERIFY PRODUCT EXIST OR NOT WITH THIS ID
+            if (!_productService.ProductExist(productId))
+                return NotFound();
 
-            return await _productionOptionService.GetProductOptions(productId);
+            return Ok(await _productionOptionService.GetProductOptions(productId));
         }
 
         [Route("{productId}/options/{id}")]
@@ -114,10 +128,19 @@ namespace refactor_this.Controllers
 
         [Route("{productId}/options")]
         [HttpPost]
-        public async Task<IHttpActionResult> CreateOption(Guid productId, ProductOption option)
+        public async Task<IHttpActionResult> CreateOption(Guid productId, CreateProductOptionDto dto)
         {
 
-            option.ProductId = productId;
+            if (!_productService.ProductExist(productId))
+                return NotFound();
+
+            //this can be simplified with automapper
+            var option = new ProductOption
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                ProductId = productId,
+            };
 
             await _productionOptionService.Create(option);
 
@@ -145,5 +168,7 @@ namespace refactor_this.Controllers
         {
             await _productionOptionService.Delete(id);
         }
+        
+        #endregion
     }
 }
