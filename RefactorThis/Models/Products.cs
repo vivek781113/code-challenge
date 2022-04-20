@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.SqlClient;
 using Newtonsoft.Json;
 
@@ -50,6 +51,7 @@ namespace refactor_this.Models
         public decimal DeliveryPrice { get; set; }
 
         [JsonIgnore]
+        [DescriptionAttribute(description:"ignore")]
         public bool IsNew { get; }
 
         public Product()

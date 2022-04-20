@@ -37,7 +37,7 @@ namespace refactor_me.Repository
         /// Open new connection and return it for use
         /// </summary>
         /// <returns></returns>
-        private IDbConnection CreateConnection()
+        protected IDbConnection CreateConnection()
         {
             var conn = SqlConnection();
             conn.Open();
@@ -101,7 +101,6 @@ namespace refactor_me.Repository
                 await connection.ExecuteAsync(updateQuery, t);
             }
         }
-        
         private string GenerateUpdateQuery()
         {
             var updateQuery = new StringBuilder($"UPDATE {_tableName} SET ");

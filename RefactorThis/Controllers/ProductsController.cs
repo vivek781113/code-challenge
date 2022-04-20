@@ -17,7 +17,7 @@ namespace refactor_this.Controllers
 
         public ProductsController()
         {
-            ////test the gloable exception handler execution
+            ////test the globle exception handler execution
             //throw new Exception("exeption in products controller");
             _productService = _productService ?? new ProductService();
         }
@@ -26,8 +26,10 @@ namespace refactor_this.Controllers
         [HttpGet]
         public async Task<IEnumerable<Product>> GetAll()
         {
-            //return new Products();
             return await _productService.GetProducts();
+
+            //old code
+            //return new Products();
         }
 
         //http://localhost:58123/api/products/SearchByName/galaxy
@@ -35,51 +37,69 @@ namespace refactor_this.Controllers
         [Route("searchByName/{name}")]
         public async Task<IEnumerable<Product>> SearchByName(string name)
         {
-            //return new Products(name);
             return await _productService.GetProductsByName(name);
+
+            //old code
+            //return new Products(name);
         }
 
         [Route("{id}")]
         [HttpGet]
-        public Product GetProduct(Guid id)
+        public async Task<IHttpActionResult> GetProduct(Guid id)
         {
-            var product = new Product(id);
-            if (product.IsNew)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+            var product = await _productService.GetProductById(id);
+            if (product == null)
+                return NotFound();
 
-            return product;
+            return Ok(product);
+
+            ///old code
+            //var product = new Product(id);
+            //if (product.IsNew)
+            //    throw new HttpResponseException(HttpStatusCode.NotFound);
+
+            //return product;
         }
 
         [Route]
         [HttpPost]
-        public IHttpActionResult Create(Product product)
+        public async Task<IHttpActionResult> Create(Product product)
         {
-            product.Save();
-            return Created("", product);
+
+            await _productService.Create(product);
+            return Created($"/products/{product.Id}", product);
+            //product.Save();
         }
 
         [Route("{id}")]
         [HttpPut]
-        public void Update(Guid id, Product product)
+        public async Task<IHttpActionResult> Update(Guid id, Product product)
         {
-            var orig = new Product(id)
-            {
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                DeliveryPrice = product.DeliveryPrice
-            };
+            if (!_productService.ProductExist(id))
+                return Conflict();
 
-            if (!orig.IsNew)
-                orig.Save();
+            await _productService.Update(product);
+            return Ok();
+
+            //var orig = new Product(id)
+            //{
+            //    Name = product.Name,
+            //    Description = product.Description,
+            //    Price = product.Price,
+            //    DeliveryPrice = product.DeliveryPrice
+            //};
+
+            //if (!orig.IsNew)
+            //    orig.Save();
         }
 
         [Route("{id}")]
         [HttpDelete]
-        public void Delete(Guid id)
+        public async Task Delete(Guid id)
         {
-            var product = new Product(id);
-            product.Delete();
+            await _productService.Delete(id);
+            //var product = new Product(id);
+            //product.Delete();
         }
 
         [Route("{productId}/options")]
