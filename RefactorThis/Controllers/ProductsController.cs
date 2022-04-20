@@ -93,21 +93,30 @@ namespace refactor_this.Controllers
         [HttpGet]
         public async Task<IEnumerable<ProductOption>> GetOptions(Guid productId)
         {
+            //TODO VERIFY PRODUCT EXIST OR NOT WITH THIS ID
+
             return await _productionOptionService.GetProductOptions(productId);
             //return new ProductOptions(productId);
         }
 
         [Route("{productId}/options/{id}")]
         [HttpGet]
-        public ProductOption GetOption(Guid productId, Guid id)
+        public async Task<IHttpActionResult> GetOption(Guid productId, Guid id)
         {
+            if (!_productService.ProductExist(productId))
+                return NotFound();
 
+            var option = await _productionOptionService.GetProductOption(id);
+            if (option == null)
+                return NotFound();
 
-            var option = new ProductOption(id);
-            if (option.IsNew)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+            return Ok(option);
 
-            return option;
+            //var option = new ProductOption(id);
+            //if (option.IsNew)
+            //    throw new HttpResponseException(HttpStatusCode.NotFound);
+
+            //return option;
         }
 
         [Route("{productId}/options")]
