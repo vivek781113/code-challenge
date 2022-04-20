@@ -22,15 +22,17 @@ namespace refactor_this.Models
         private void LoadProducts(string where)
         {
             Items = new List<Product>();
-            var conn = Helpers.NewConnection();
-            var cmd = new SqlCommand($"select id from product {where}", conn);
-            conn.Open();
-
-            var rdr = cmd.ExecuteReader();
-            while (rdr.Read())
+            using (var conn = Helpers.NewConnection())
             {
-                var id = Guid.Parse(rdr["id"].ToString());
-                Items.Add(new Product(id));
+                var cmd = new SqlCommand($"select id from product {where}", conn);
+                conn.Open();
+
+                var rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    var id = Guid.Parse(rdr["id"].ToString());
+                    Items.Add(new Product(id));
+                }
             }
         }
     }
@@ -46,7 +48,7 @@ namespace refactor_this.Models
         public decimal Price { get; set; }
 
         public decimal DeliveryPrice { get; set; }
-        
+
         [JsonIgnore]
         public bool IsNew { get; }
 
@@ -78,8 +80,8 @@ namespace refactor_this.Models
         public void Save()
         {
             var conn = Helpers.NewConnection();
-            var cmd = IsNew ? 
-                new SqlCommand($"insert into product (id, name, description, price, deliveryprice) values ('{Id}', '{Name}', '{Description}', {Price}, {DeliveryPrice})", conn) : 
+            var cmd = IsNew ?
+                new SqlCommand($"insert into product (id, name, description, price, deliveryprice) values ('{Id}', '{Name}', '{Description}', {Price}, {DeliveryPrice})", conn) :
                 new SqlCommand($"update product set name = '{Name}', description = '{Description}', price = {Price}, deliveryprice = {DeliveryPrice} where id = '{Id}'", conn);
 
             conn.Open();
