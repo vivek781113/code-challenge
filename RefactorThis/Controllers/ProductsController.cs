@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using refactor_me.Filters;
+using refactor_me.ProductOptionService;
 using refactor_me.ProductService;
 using refactor_this.Models;
 
@@ -14,34 +15,36 @@ namespace refactor_this.Controllers
     public class ProductsController : ApiController
     {
         private readonly IProductService _productService;
+        private readonly IProductOptionService _productionOptionService;
 
-        public ProductsController(IProductService productService)
+        /// <summary>
+        /// Constructore of the controller
+        /// </summary>
+        /// <param name="productService">product service instacne, unity will take care of resolving & registering the serivce</param>
+        /// <param name="productOptionService">productOptionService, unity will take care of resolving & registering the serivce</param>
+        public ProductsController(IProductService productService, IProductOptionService productOptionService)
         {
             ////test the globle exception handler execution
-            //throw new Exception("exeption in products controller");
             //_productService = _productService ?? new ProductService();
             _productService = productService;
+            _productionOptionService = productOptionService;
         }
+
+
+        #region Product Actions
 
         [Route]
         [HttpGet]
         public async Task<IEnumerable<Product>> GetAll()
         {
             return await _productService.GetProducts();
-
-            //old code
-            //return new Products();
         }
 
-        //http://localhost:58123/api/products/SearchByName/galaxy
         [HttpGet]
         [Route("searchByName/{name}")]
         public async Task<IEnumerable<Product>> SearchByName(string name)
         {
             return await _productService.GetProductsByName(name);
-
-            //old code
-            //return new Products(name);
         }
 
         [Route("{id}")]
@@ -53,13 +56,6 @@ namespace refactor_this.Controllers
                 return NotFound();
 
             return Ok(product);
-
-            ///old code
-            //var product = new Product(id);
-            //if (product.IsNew)
-            //    throw new HttpResponseException(HttpStatusCode.NotFound);
-
-            //return product;
         }
 
         [Route]
@@ -69,7 +65,6 @@ namespace refactor_this.Controllers
 
             await _productService.Create(product);
             return Created($"/products/{product.Id}", product);
-            //product.Save();
         }
 
         [Route("{id}")]
@@ -82,16 +77,6 @@ namespace refactor_this.Controllers
             await _productService.Update(product);
             return Ok();
 
-            //var orig = new Product(id)
-            //{
-            //    Name = product.Name,
-            //    Description = product.Description,
-            //    Price = product.Price,
-            //    DeliveryPrice = product.DeliveryPrice
-            //};
-
-            //if (!orig.IsNew)
-            //    orig.Save();
         }
 
         [Route("{id}")]
@@ -99,21 +84,25 @@ namespace refactor_this.Controllers
         public async Task Delete(Guid id)
         {
             await _productService.Delete(id);
-            //var product = new Product(id);
-            //product.Delete();
         }
+        
+        #endregion
 
+        
         [Route("{productId}/options")]
         [HttpGet]
-        public ProductOptions GetOptions(Guid productId)
+        public async Task<IEnumerable<ProductOption>> GetOptions(Guid productId)
         {
-            return new ProductOptions(productId);
+            return await _productionOptionService.GetProductOptions(productId);
+            //return new ProductOptions(productId);
         }
 
         [Route("{productId}/options/{id}")]
         [HttpGet]
         public ProductOption GetOption(Guid productId, Guid id)
         {
+
+
             var option = new ProductOption(id);
             if (option.IsNew)
                 throw new HttpResponseException(HttpStatusCode.NotFound);

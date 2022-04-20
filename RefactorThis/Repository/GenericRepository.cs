@@ -98,7 +98,7 @@ namespace refactor_me.Repository
 
             using (var connection = CreateConnection())
             {
-                await connection.ExecuteAsync(updateQuery, t);
+                int rowsAffected = await connection.ExecuteAsync(updateQuery, t);
             }
         }
         private string GenerateUpdateQuery()
