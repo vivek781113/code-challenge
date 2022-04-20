@@ -11,9 +11,10 @@ namespace refactor_me.ProductService
     {
         private readonly ProductRepository _repo;
 
-        public ProductService()
+        public ProductService(ProductRepository repo)
         {
-            _repo = _repo ?? new ProductRepository();
+            //_repo = _repo ?? new ProductRepository();
+            _repo = repo;
         }
 
 

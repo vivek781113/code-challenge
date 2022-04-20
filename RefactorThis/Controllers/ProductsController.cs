@@ -13,13 +13,14 @@ namespace refactor_this.Controllers
     [ProductsExceptionFilter]
     public class ProductsController : ApiController
     {
-        private readonly ProductService _productService;
+        private readonly IProductService _productService;
 
-        public ProductsController()
+        public ProductsController(IProductService productService)
         {
             ////test the globle exception handler execution
             //throw new Exception("exeption in products controller");
-            _productService = _productService ?? new ProductService();
+            //_productService = _productService ?? new ProductService();
+            _productService = productService;
         }
 
         [Route]

@@ -1,4 +1,5 @@
-﻿using refactor_me.Filters;
+﻿using refactor_me;
+using refactor_me.Filters;
 using refactor_me.Handlers;
 using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
@@ -9,7 +10,8 @@ namespace refactor_this
     {
         public static void Register(HttpConfiguration config)
         {
-
+            UnityConfig.RegisterComponents();
+            
             config.Filters.Add(new ProductsExceptionFilter());
 
             /*
