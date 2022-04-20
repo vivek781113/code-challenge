@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Http;
 using refactor_me.Filters;
+using refactor_me.ProductService;
 using refactor_this.Models;
 
 namespace refactor_this.Controllers
@@ -10,25 +13,30 @@ namespace refactor_this.Controllers
     [ProductsExceptionFilter]
     public class ProductsController : ApiController
     {
+        private readonly ProductService _productService;
 
         public ProductsController()
         {
             ////test the gloable exception handler execution
             //throw new Exception("exeption in products controller");
+            _productService = _productService ?? new ProductService();
         }
 
         [Route]
         [HttpGet]
-        public Products GetAll()
+        public async Task<IEnumerable<Product>> GetAll()
         {
-            return new Products();
+            //return new Products();
+            return await _productService.GetProducts();
         }
 
-        [Route]
+        //http://localhost:58123/api/products/SearchByName/galaxy
         [HttpGet]
-        public Products SearchByName(string name)
+        [Route("searchByName/{name}")]
+        public async Task<IEnumerable<Product>> SearchByName(string name)
         {
-            return new Products(name);
+            //return new Products(name);
+            return await _productService.GetProductsByName(name);
         }
 
         [Route("{id}")]
