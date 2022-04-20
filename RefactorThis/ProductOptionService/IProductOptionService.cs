@@ -9,5 +9,8 @@ namespace refactor_me.ProductOptionService
     {
         Task<IEnumerable<ProductOption>> GetProductOptions(Guid productId);
         Task<ProductOption> GetProductOption(Guid Id);
+        Task Create(ProductOption option);
+        Task Update(ProductOption option);
+        Task Delete(Guid id);
     }
 }

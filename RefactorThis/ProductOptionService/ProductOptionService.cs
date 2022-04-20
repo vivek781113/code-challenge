@@ -9,7 +9,7 @@ namespace refactor_me.ProductOptionService
 {
     public class ProductOptionService : IProductOptionService
     {
-        private ProductOptionRepository _repo;
+        private readonly ProductOptionRepository _repo;
 
         public ProductOptionService(ProductOptionRepository repo)
         {
@@ -40,6 +40,21 @@ namespace refactor_me.ProductOptionService
                 Debug.WriteLine($"message: {ex.Message}\nstack-trace:{ex.StackTrace}");
                 throw new Exception("Something bad happer while fetching the product option");
             }
+        }
+
+        public async Task Create(ProductOption option)
+        {
+            await _repo.InsertAsync(option);
+        }
+
+        public async Task Update(ProductOption option)
+        {
+           await _repo.UpdateAsync(option);
+        }
+
+        public async Task Delete(Guid id)
+        {
+            await _repo.DeleteRowAsync(id);
         }
     }
 }

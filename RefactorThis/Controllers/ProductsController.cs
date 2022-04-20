@@ -96,7 +96,6 @@ namespace refactor_this.Controllers
             //TODO VERIFY PRODUCT EXIST OR NOT WITH THIS ID
 
             return await _productionOptionService.GetProductOptions(productId);
-            //return new ProductOptions(productId);
         }
 
         [Route("{productId}/options/{id}")]
@@ -111,42 +110,40 @@ namespace refactor_this.Controllers
                 return NotFound();
 
             return Ok(option);
-
-            //var option = new ProductOption(id);
-            //if (option.IsNew)
-            //    throw new HttpResponseException(HttpStatusCode.NotFound);
-
-            //return option;
         }
 
         [Route("{productId}/options")]
         [HttpPost]
-        public void CreateOption(Guid productId, ProductOption option)
+        public async Task<IHttpActionResult> CreateOption(Guid productId, ProductOption option)
         {
+
             option.ProductId = productId;
-            option.Save();
+
+            await _productionOptionService.Create(option);
+
+            return Created($"/products/{productId}/options", option);
+
         }
 
         [Route("{productId}/options/{id}")]
         [HttpPut]
-        public void UpdateOption(Guid id, ProductOption option)
+        public async Task<IHttpActionResult> UpdateOption(Guid id, ProductOption option)
         {
-            var orig = new ProductOption(id)
-            {
-                Name = option.Name,
-                Description = option.Description
-            };
 
-            if (!orig.IsNew)
-                orig.Save();
+            var productOption = await _productionOptionService.GetProductOption(id);
+
+            if (productOption == null)
+                return Conflict();
+
+            await _productionOptionService.Update(option);
+            return Ok();
         }
 
         [Route("{productId}/options/{id}")]
         [HttpDelete]
-        public void DeleteOption(Guid id)
+        public async Task DeleteOption(Guid id)
         {
-            var opt = new ProductOption(id);
-            opt.Delete();
+            await _productionOptionService.Delete(id);
         }
     }
 }

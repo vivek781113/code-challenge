@@ -142,6 +142,7 @@ namespace refactor_this.Models
 
         public string Description { get; set; }
 
+        [DescriptionAttribute(description: "ignore")]
         [JsonIgnore]
         public bool IsNew { get; }
 
