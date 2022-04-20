@@ -10,11 +10,11 @@ namespace refactor_this.Controllers
     [ProductsExceptionFilter]
     public class ProductsController : ApiController
     {
-        private readonly Products _products;
 
         public ProductsController()
         {
-            throw new Exception("exeption in products controller");
+            ////test the gloable exception handler execution
+            //throw new Exception("exeption in products controller");
         }
 
         [Route]
@@ -44,9 +44,10 @@ namespace refactor_this.Controllers
 
         [Route]
         [HttpPost]
-        public void Create(Product product)
+        public IHttpActionResult Create(Product product)
         {
             product.Save();
+            return Created("", product);
         }
 
         [Route("{id}")]

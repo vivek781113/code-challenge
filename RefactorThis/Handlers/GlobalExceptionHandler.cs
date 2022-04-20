@@ -10,6 +10,7 @@ namespace refactor_me.Handlers
         public override void Handle(ExceptionHandlerContext context)
         {
             // Access Exception using context.Exception;
+            //loggin can be done here to store the logs at file or db level
             const string errorMessage = "An unexpected error occured";
             var response = context.Request.CreateResponse(HttpStatusCode.InternalServerError,
                 new
