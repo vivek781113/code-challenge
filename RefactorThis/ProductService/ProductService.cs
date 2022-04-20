@@ -43,6 +43,7 @@ namespace refactor_me.ProductService
             }
             catch (Exception ex)
             {
+                //log the exception to file or db
                 Debug.WriteLine($"message: {ex.Message}\nstack-trace:{ex.StackTrace}");
                 throw new Exception("Something bad happer while fetching the product");
             }
@@ -50,22 +51,61 @@ namespace refactor_me.ProductService
 
         public async Task Create(Product product)
         {
-           await _repo.InsertAsync(product);
+            try
+            {
+                await _repo.InsertAsync(product);
+
+            }
+            catch (Exception ex)
+            {
+                //log the exception to file or db
+                Debug.WriteLine($"message: {ex.Message}\nstack-trace:{ex.StackTrace}");
+                throw new Exception("Something bad happer while fetching the product");
+            }
         }
 
         public bool ProductExist(Guid id)
         {
-            return _repo.ProductExist(id);
+            try
+            {
+
+                return _repo.ProductExist(id);
+            }
+            catch (Exception ex)
+            {
+                //log the exception to file or db
+                Debug.WriteLine($"message: {ex.Message}\nstack-trace:{ex.StackTrace}");
+                throw new Exception("Something bad happer while fetching the product");
+            }
         }
 
         public async Task Update(Product product)
         {
-            await _repo.UpdateAsync(product);
+            try
+            {
+                await _repo.UpdateAsync(product);
+            }
+            catch (Exception ex)
+            {
+                //log the exception to file or db
+                Debug.WriteLine($"message: {ex.Message}\nstack-trace:{ex.StackTrace}");
+                throw new Exception("Something bad happer while fetching the product");
+            }
         }
 
         public async Task Delete(Guid id)
         {
-            await _repo.DeleteRowAsync(id);
+            try
+            {
+                await _repo.DeleteRowAsync(id);
+            }
+            catch (Exception ex)
+            {
+                //log the exception to file or db
+                Debug.WriteLine($"message: {ex.Message}\nstack-trace:{ex.StackTrace}");
+                throw new Exception("Something bad happer while fetching the product");
+            }
+
         }
     }
 }

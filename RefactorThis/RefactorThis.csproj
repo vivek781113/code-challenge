@@ -116,7 +116,6 @@
     <Compile Include="Handlers\GlobalExceptionHandler.cs" />
     <Compile Include="Models\CreateProductDto.cs" />
     <Compile Include="Models\CreateProductOptionDto.cs" />
-    <Compile Include="Models\Helpers.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\ProductOption.cs" />
     <Compile Include="ProductOptionService\IProductOptionService.cs" />

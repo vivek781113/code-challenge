@@ -16,11 +16,19 @@ namespace refactor_me.ProductOptionService
             _repo = repo;
         }
 
-
         public async Task<IEnumerable<ProductOption>> GetProductOptions(Guid productId)
         {
-            string query = $"where productid = '{productId}'";
-            return await _repo.GetAllAsync(query);
+            try
+            {
+                string query = $"where productid = '{productId}'";
+                return await _repo.GetAllAsync(query);
+            }
+            catch (Exception ex)
+            {
+                //log the exception to file or db
+                Debug.WriteLine($"message: {ex.Message}\nstack-trace:{ex.StackTrace}");
+                throw new Exception("Something bad happer while fetching the product");
+            }
         }
         public async Task<ProductOption> GetProductOption(Guid Id)
         {
@@ -44,17 +52,48 @@ namespace refactor_me.ProductOptionService
 
         public async Task Create(ProductOption option)
         {
-            await _repo.InsertAsync(option);
+            try
+            {
+                await _repo.InsertAsync(option);
+            }
+
+            catch (Exception ex)
+            {
+                //log the exception to file or db
+                Debug.WriteLine($"message: {ex.Message}\nstack-trace:{ex.StackTrace}");
+                throw new Exception("Something bad happer while fetching the product");
+            }
+
         }
 
         public async Task Update(ProductOption option)
         {
-           await _repo.UpdateAsync(option);
+            try
+            {
+                await _repo.UpdateAsync(option);
+            }
+            catch (Exception ex)
+            {
+                //log the exception to file or db
+                Debug.WriteLine($"message: {ex.Message}\nstack-trace:{ex.StackTrace}");
+                throw new Exception("Something bad happer while fetching the product");
+            }
+
         }
 
         public async Task Delete(Guid id)
         {
-            await _repo.DeleteRowAsync(id);
+            try
+            {
+                await _repo.DeleteRowAsync(id);
+            }
+            catch (Exception ex)
+            {
+                //log the exception to file or db
+                Debug.WriteLine($"message: {ex.Message}\nstack-trace:{ex.StackTrace}");
+                throw new Exception("Something bad happer while fetching the product");
+            }
+
         }
     }
 }
