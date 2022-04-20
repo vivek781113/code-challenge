@@ -14,7 +14,7 @@ namespace refactor_this.Controllers
 
         public ProductsController()
         {
-            _products = _products ?? new Products();
+            throw new Exception("exeption in products controller");
         }
 
         [Route]

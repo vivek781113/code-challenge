@@ -1,5 +1,7 @@
 ﻿using refactor_me.Filters;
+using refactor_me.Handlers;
 using System.Web.Http;
+using System.Web.Http.ExceptionHandling;
 
 namespace refactor_this
 {
@@ -9,6 +11,18 @@ namespace refactor_this
         {
 
             config.Filters.Add(new ProductsExceptionFilter());
+
+            /*
+             * any error is raised in the following area then exception filter will not work.
+             * Error inside the exception filter.
+               Exception related to routing.
+               Error inside the Message Handlers class.
+               Error in Controller Constructor.
+             */
+
+            //registering exception handlers
+            config.Services.Replace(typeof(IExceptionHandler), new GlobalExceptionHandler());
+
 
             // Web API configuration and services
             var formatters = GlobalConfiguration.Configuration.Formatters;
